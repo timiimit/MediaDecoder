@@ -5,10 +5,7 @@
 #include "MediaDecoder.h"
 
 
-typedef struct SoundResamplerContext
-{
-	//char _private[];
-} SoundResamplerContext;
+typedef struct SoundResamplerContext SoundResamplerContext;
 
 #ifdef __cplusplus
 extern "C"

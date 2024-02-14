@@ -4,10 +4,7 @@
 #include <stdbool.h>
 #include "MediaDecoder.h"
 
-typedef struct ImageResizerContext
-{
-	//char _private[];
-} ImageResizerContext;
+typedef struct ImageResizerContext ImageResizerContext;
 
 //typedef TYPE ;
 
