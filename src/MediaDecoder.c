@@ -106,7 +106,7 @@ MediaDecoderContext* MediaDecoder_Open(const char* url)
 			playback->selectedVideoStream = i;
 			ctx->ctx.video.originalWidth = ctx->ctx.video.decodedWidth = stream->codecpar->width;
 			ctx->ctx.video.originalHeight = ctx->ctx.video.decodedHeight = stream->codecpar->height;
-			ctx->ctx.video.decodedPixelFormat = BGRA32;
+			ctx->ctx.video.decodedPixelFormat = PIXEL_FORMAT_BGRA32;
 			if (ctx->ctx.video.decodedWidth > 0 && ctx->ctx.video.decodedHeight > 0)
 			{
 				ctx->ctx.video.bytesPerFrame = av_image_get_buffer_size(
@@ -412,19 +412,19 @@ int MediaDecoder_NextFrame_Video(InternalContext* ctx, AVFrame* softwareFrame)
 	int outImageLineSize[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	switch (context->video.decodedPixelFormat)
 	{
-	case RGB24:
-	case BGR24:
+	case PIXEL_FORMAT_RGB24:
+	case PIXEL_FORMAT_BGR24:
 		outImageLineSize[0] = 3;
 		break;
 
-	case ARGB32:
-	case RGBA32:
-	case ABGR32:
-	case BGRA32:
+	case PIXEL_FORMAT_ARGB32:
+	case PIXEL_FORMAT_RGBA32:
+	case PIXEL_FORMAT_ABGR32:
+	case PIXEL_FORMAT_BGRA32:
 		outImageLineSize[0] = 4;
 		break;
 
-	case GRAY8:
+	case PIXEL_FORMAT_GRAY8:
 		outImageLineSize[0] = 1;
 		break;
 
