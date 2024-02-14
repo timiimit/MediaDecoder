@@ -21,6 +21,7 @@ typedef struct MediaDecoderPlaybackInfo
 
 typedef enum MediaDecoderPixelFormat
 {
+	PIXEL_FORMAT_UNKNOWN = -1,
 	PIXEL_FORMAT_RGB24 = 2,
 	PIXEL_FORMAT_BGR24 = 3,
 	PIXEL_FORMAT_GRAY8 = 8,
@@ -32,6 +33,7 @@ typedef enum MediaDecoderPixelFormat
 
 typedef enum MediaDecoderSampleFormat
 {
+	SAMPLE_FORMAT_UNKNOWN = -1,
 	SAMPLE_FORMAT_UINI8 = 0,
 	SAMPLE_FORMAT_INI16 = 1,
 	SAMPLE_FORMAT_INI32 = 2,

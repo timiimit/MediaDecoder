@@ -40,10 +40,10 @@ ImageResizerContext* ImageResizer_CreateContext()
 	ctx->ctxScale = NULL;
 	ctx->cacheInWidth = -1;
 	ctx->cacheInHeight = -1;
-	ctx->cacheInFormat = AV_PIX_FMT_NONE;
+	ctx->cacheInFormat = PIXEL_FORMAT_UNKNOWN;
 	ctx->cacheOutWidth = -1;
 	ctx->cacheOutHeight = -1;
-	ctx->cacheOutFormat = AV_PIX_FMT_NONE;
+	ctx->cacheOutFormat = PIXEL_FORMAT_UNKNOWN;
 
 	return (ImageResizerContext*)ctx;
 }

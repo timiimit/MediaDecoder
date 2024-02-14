@@ -19,10 +19,10 @@ SoundResamplerContext* SoundResampler_CreateContext()
 	ctx->ctx = NULL;
 	ctx->cacheInSampleRate = -1;
 	ctx->cacheInChannelLayout = CHANNEL_LAYOUT_STEREO;
-	ctx->cacheInFormat = AV_SAMPLE_FMT_NONE;
+	ctx->cacheInFormat = SAMPLE_FORMAT_UNKNOWN;
 	ctx->cacheOutSampleRate = -1;
 	ctx->cacheOutChannelLayout = CHANNEL_LAYOUT_STEREO;
-	ctx->cacheOutFormat = AV_SAMPLE_FMT_NONE;
+	ctx->cacheOutFormat = SAMPLE_FORMAT_UNKNOWN;
 
 	return (SoundResamplerContext*)ctx;
 }
