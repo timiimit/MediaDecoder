@@ -12,7 +12,7 @@ typedef struct
 	enum MediaDecoderPixelFormat cacheOutFormat;
 } InternalState;
 
-inline enum AVPixelFormat FixDeprecatedFormat(enum AVPixelFormat format)
+static enum AVPixelFormat FixDeprecatedFormat(enum AVPixelFormat format)
 {
 	switch (format) {
 		case AV_PIX_FMT_YUVJ420P:
