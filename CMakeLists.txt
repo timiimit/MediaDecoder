@@ -11,8 +11,7 @@ add_library(${PROJECT_NAME} STATIC
 	src/Internal.c src/Internal.h
 )
 
-target_sources(${PROJECT_NAME} PUBLIC FILE_SET HEADERS
-	FILES include/MediaDecoder.h)
+	PUBLIC FILE_SET HEADERS BASE_DIRS include FILES include/${PROJECT_NAME}/MediaDecoder.h
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
