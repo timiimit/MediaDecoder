@@ -161,9 +161,6 @@ install(FILES
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
 
-get_target_property(test PkgConfig::FFmpeg INTERFACE_LINK_LIBRARIES)
-message("LINK_LIBRARIES: ${test}")
-
 set(version 0.1.0)
 set_property(TARGET ${PROJECT_NAME} PROPERTY VERSION ${version})
 set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION 3)
