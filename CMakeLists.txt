@@ -27,30 +27,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 )
 
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-	# we expect FFmpeg to not be available and download it manually
-	set(FFMPEG_BUILD_NAME "autobuild-2024-02-13-15-10")
-	set(FFMPEG_VERSION "ffmpeg-n6.1.1-5-g3e79074c41-win64-lgpl-shared-6.1")
-	FetchContent_Declare(
-		FFmpeg
-		URL "https://github.com/BtbN/FFmpeg-Builds/releases/download/${FFMPEG_BUILD_NAME}/${FFMPEG_VERSION}.zip"
-		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-	)
-	FetchContent_MakeAvailable(FFmpeg)
-	set(FFMPEG_DIR "${CMAKE_BINARY_DIR}/_deps/ffmpeg-src")
-
-	# ensure find_package can locate FFmpeg's files
-	set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${FFMPEG_DIR}")
-
-	# ensure FFmpeg library also gets installed alongside MediaDecoder
-	install(DIRECTORY "${FFMPEG_DIR}/bin/" DESTINATION "${CMAKE_INSTALL_BINDIR}" FILES_MATCHING PATTERN "*.dll")
-	install(DIRECTORY "${FFMPEG_DIR}/lib/" DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-	install(DIRECTORY "${FFMPEG_DIR}/include/" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
-else()
-	# we expect FFmpeg to be installed system-wide
-endif()
-
-find_package(PkgConfig)
+find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFmpeg REQUIRED IMPORTED_TARGET
 	libavcodec
 	#libavdevice
@@ -62,9 +39,6 @@ pkg_check_modules(FFmpeg REQUIRED IMPORTED_TARGET
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC PkgConfig::FFmpeg)
 
-# set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE On)
-
-# Install library
 install(TARGETS ${PROJECT_NAME}
 	EXPORT "${PROJECT_NAME}Targets"
 	FILE_SET HEADERS
@@ -73,7 +47,6 @@ install(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
 	#INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" # NOTE: due to use of FILE_SET this is not used
 )
-# Install library import file
 install(EXPORT "${PROJECT_NAME}Targets"
 	FILE "${PROJECT_NAME}Targets.cmake"
 	NAMESPACE "${PROJECT_NAME}::"
