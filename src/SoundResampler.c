@@ -27,16 +27,19 @@ SoundResamplerContext* SoundResampler_CreateContext()
 	return (SoundResamplerContext*)ctx;
 }
 
-bool SoundResampler_SetParameters(SoundResamplerContext* context,
-	int inSampleRate, enum MediaDecoderChannelLayout inChannelLayout, enum MediaDecoderSampleFormat inFormat,
-	int outSampleRate, enum MediaDecoderChannelLayout outChannelLayout, enum MediaDecoderSampleFormat outFormat)
+bool SoundResampler_SetParameters(
+	SoundResamplerContext* context, int inSampleRate, enum MediaDecoderChannelLayout inChannelLayout,
+	enum MediaDecoderSampleFormat inFormat, int outSampleRate, enum MediaDecoderChannelLayout outChannelLayout,
+	enum MediaDecoderSampleFormat outFormat
+)
 {
 	InternalState* ctx = (InternalState*)context;
 
 	if (ctx->ctx)
 	{
-		if (inSampleRate == ctx->cacheInSampleRate && inChannelLayout == ctx->cacheInChannelLayout && inFormat == ctx->cacheInFormat &&
-			outSampleRate == ctx->cacheOutSampleRate && outChannelLayout == ctx->cacheOutChannelLayout && outFormat == ctx->cacheOutFormat)
+		if (inSampleRate == ctx->cacheInSampleRate && inChannelLayout == ctx->cacheInChannelLayout &&
+			inFormat == ctx->cacheInFormat && outSampleRate == ctx->cacheOutSampleRate &&
+			outChannelLayout == ctx->cacheOutChannelLayout && outFormat == ctx->cacheOutFormat)
 		{
 			return ctx->ctx;
 		}
@@ -49,15 +52,16 @@ bool SoundResampler_SetParameters(SoundResamplerContext* context,
 	ctx->cacheOutChannelLayout = outChannelLayout;
 	ctx->cacheOutFormat = outFormat;
 	swr_free(&ctx->ctx);
-	//ctx->ctx = swr_alloc_set_opts(ctx->ctx, outChannelLayout, outFormat, outSampleRate, inChannelLayout, inFormat, inSampleRate, 0, NULL);
+	// ctx->ctx = swr_alloc_set_opts(ctx->ctx, outChannelLayout, outFormat, outSampleRate, inChannelLayout, inFormat,
+	// inSampleRate, 0, NULL);
 
 	struct AVChannelLayout inChLay = FromEnumToChannelLayout(inChannelLayout);
 	struct AVChannelLayout outChLay = FromEnumToChannelLayout(outChannelLayout);
 
-	if (!swr_alloc_set_opts2(&ctx->ctx,
-		&outChLay, (enum AVSampleFormat)outFormat, outSampleRate,
-		&inChLay, (enum AVSampleFormat)inFormat, inSampleRate,
-		0, NULL))
+	if (!swr_alloc_set_opts2(
+			&ctx->ctx, &outChLay, (enum AVSampleFormat)outFormat, outSampleRate, &inChLay,
+			(enum AVSampleFormat)inFormat, inSampleRate, 0, NULL
+		))
 	{
 		swr_init(ctx->ctx);
 	}
@@ -71,12 +75,13 @@ int SoundResampler_FindMaxOutputSamples(SoundResamplerContext* context, int inSa
 	return swr_get_out_samples(ctx->ctx, inSampleCountPerChannel);
 }
 
-int SoundResampler_Resample(SoundResamplerContext* context, const uint8_t** inSoundData, int inSampleCountPerChannel, uint8_t** outSoundData, int outSampleCountPerChannel)
+int SoundResampler_Resample(
+	SoundResamplerContext* context, const uint8_t** inSoundData, int inSampleCountPerChannel, uint8_t** outSoundData,
+	int outSampleCountPerChannel
+)
 {
 	InternalState* ctx = (InternalState*)context;
-	return swr_convert(ctx->ctx,
-		outSoundData, outSampleCountPerChannel,
-		inSoundData, inSampleCountPerChannel);
+	return swr_convert(ctx->ctx, outSoundData, outSampleCountPerChannel, inSoundData, inSampleCountPerChannel);
 }
 
 void SoundResampler_ReleaseContext(SoundResamplerContext** context)

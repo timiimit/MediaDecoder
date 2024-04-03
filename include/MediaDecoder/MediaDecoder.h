@@ -21,24 +21,24 @@ typedef struct MediaDecoderPlaybackInfo
 
 typedef enum MediaDecoderPixelFormat
 {
-	PIXEL_FORMAT_UNKNOWN = -1,
-	PIXEL_FORMAT_RGB24 = 2,
-	PIXEL_FORMAT_BGR24 = 3,
-	PIXEL_FORMAT_GRAY8 = 8,
-	PIXEL_FORMAT_ARGB32 = 25,
-	PIXEL_FORMAT_RGBA32 = 26,
-	PIXEL_FORMAT_ABGR32 = 27,
-	PIXEL_FORMAT_BGRA32 = 28,
+	PIXEL_FORMAT_UNKNOWN,
+	PIXEL_FORMAT_R8_UINT,
+	PIXEL_FORMAT_R8G8B8_UINT,
+	PIXEL_FORMAT_R8G8B8A8_UINT,
+	PIXEL_FORMAT_R16G16B16_UINT,
+	PIXEL_FORMAT_R16G16B16A16_UINT,
+	PIXEL_FORMAT_R16G16B16A16_FLOAT,
+	PIXEL_FORMAT_R32G32B32A32_FLOAT,
 } MediaDecoderPixelFormat;
 
 typedef enum MediaDecoderSampleFormat
 {
-	SAMPLE_FORMAT_UNKNOWN = -1,
-	SAMPLE_FORMAT_UINI8 = 0,
-	SAMPLE_FORMAT_INI16 = 1,
-	SAMPLE_FORMAT_INI32 = 2,
-	SAMPLE_FORMAT_FLOAT = 3,
-	SAMPLE_FORMAT_DOUBLE = 4,
+	SAMPLE_FORMAT_UNKNOWN,
+	SAMPLE_FORMAT_UINT8,
+	SAMPLE_FORMAT_INT16,
+	SAMPLE_FORMAT_INT32,
+	SAMPLE_FORMAT_FLOAT,
+	SAMPLE_FORMAT_DOUBLE,
 } MediaDecoderSampleFormat;
 
 typedef enum MediaDecoderChannelLayout
@@ -113,7 +113,17 @@ extern "C"
 	//MEDIADECODER_EXPORT int MediaDecoder_SelectAudioStream(MediaDecoderContext* context, uint32_t steramIndex);
 	MEDIADECODER_EXPORT int MediaDecoder_IsImage(MediaDecoderContext* context);
 	MEDIADECODER_EXPORT int MediaDecoder_Play(MediaDecoderContext* context, double time);
+
+	/// @brief Read next frame
+	/// @param context Context returned by MediaDecoder_Open
+	/// @param streamIndex [out] index of stream in current frame
+	/// @return
 	MEDIADECODER_EXPORT int MediaDecoder_NextFrame(MediaDecoderContext* context, uint32_t* streamIndex);
+
+	/// @brief Decode current frame
+	/// @param context Context returned by MediaDecoder_Open
+	/// @return 0 if frame was successfully decoded
+	MEDIADECODER_EXPORT int MediaDecoder_DecodeFrame(MediaDecoderContext* context);
 	MEDIADECODER_EXPORT int MediaDecoder_Seek(MediaDecoderContext* context, double time);
 	MEDIADECODER_EXPORT int MediaDecoder_Close(MediaDecoderContext** context);
 #ifdef __cplusplus

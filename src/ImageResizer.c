@@ -1,4 +1,5 @@
 #include "ImageResizer.h"
+#include "Internal.h"
 #include <libswscale/swscale.h>
 
 typedef struct
@@ -14,21 +15,22 @@ typedef struct
 
 static enum AVPixelFormat FixDeprecatedFormat(enum AVPixelFormat format)
 {
-	switch (format) {
-		case AV_PIX_FMT_YUVJ420P:
-			format = AV_PIX_FMT_YUV420P;
-			break;
-		case AV_PIX_FMT_YUVJ422P:
-			format = AV_PIX_FMT_YUV422P;
-			break;
-		case AV_PIX_FMT_YUVJ444P:
-			format = AV_PIX_FMT_YUV444P;
-			break;
-		case AV_PIX_FMT_YUVJ440P:
-			format = AV_PIX_FMT_YUV440P;
-			break;
-		default:
-			break;
+	switch (format)
+	{
+	case AV_PIX_FMT_YUVJ420P:
+		format = AV_PIX_FMT_YUV420P;
+		break;
+	case AV_PIX_FMT_YUVJ422P:
+		format = AV_PIX_FMT_YUV422P;
+		break;
+	case AV_PIX_FMT_YUVJ444P:
+		format = AV_PIX_FMT_YUV444P;
+		break;
+	case AV_PIX_FMT_YUVJ440P:
+		format = AV_PIX_FMT_YUV440P;
+		break;
+	default:
+		break;
 	}
 
 	return format;
@@ -48,14 +50,23 @@ ImageResizerContext* ImageResizer_CreateContext()
 	return (ImageResizerContext*)ctx;
 }
 
-bool ImageResizer_SetParameters(ImageResizerContext* context,
-	int inWidth, int inHeight, enum MediaDecoderPixelFormat inFormat,
-	int outWidth, int outHeight, enum MediaDecoderPixelFormat outFormat)
+bool ImageResizer_SetParameters(
+	ImageResizerContext* context, int inWidth, int inHeight, enum MediaDecoderPixelFormat inFormat, int outWidth,
+	int outHeight, enum MediaDecoderPixelFormat outFormat
+)
 {
 	InternalState* ctx = (InternalState*)context;
 
-	inFormat = (enum MediaDecoderPixelFormat)FixDeprecatedFormat((enum AVPixelFormat)inFormat);
-	outFormat = (enum MediaDecoderPixelFormat)FixDeprecatedFormat((enum AVPixelFormat)outFormat);
+	enum AVPixelFormat inFormatRaw = MapPixelFormat(inFormat);
+	if (inFormatRaw == AV_PIX_FMT_NONE)
+		inFormatRaw = ((enum AVPixelFormat)inFormat) & 0xFFFF;
+
+	enum AVPixelFormat outFormatRaw = MapPixelFormat(outFormat);
+	if (outFormatRaw == AV_PIX_FMT_NONE)
+		outFormatRaw = ((enum AVPixelFormat)outFormat) & 0xFFFF;
+
+	inFormatRaw = FixDeprecatedFormat(inFormatRaw);
+	outFormatRaw = FixDeprecatedFormat(outFormatRaw);
 
 	if (ctx->ctxScale)
 	{
@@ -75,24 +86,20 @@ bool ImageResizer_SetParameters(ImageResizerContext* context,
 
 	sws_freeContext(ctx->ctxScale);
 	ctx->ctxScale = sws_getContext(
-		inWidth, inHeight, (enum AVPixelFormat)inFormat,
-		outWidth, outHeight, (enum AVPixelFormat)outFormat,
-		SWS_BILINEAR, NULL, NULL, NULL);
+		inWidth, inHeight, inFormatRaw, outWidth, outHeight, outFormatRaw, SWS_BILINEAR, NULL, NULL, NULL
+	);
 
 	return ctx->ctxScale != NULL;
 }
 
-int ImageResizer_Resize(ImageResizerContext* context,
-	const uint8_t* const* inImageData, const int* inImageStride,
-	uint8_t* const* outImageData, const int* outImageStride)
+int ImageResizer_Resize(
+	ImageResizerContext* context, const uint8_t* const* inImageData, const int* inImageStride,
+	uint8_t* const* outImageData, const int* outImageStride
+)
 {
 	InternalState* ctx = (InternalState*)context;
-	return sws_scale(ctx->ctxScale,
-		inImageData, inImageStride,
-		0, ctx->cacheInHeight,
-		outImageData, outImageStride);
+	return sws_scale(ctx->ctxScale, inImageData, inImageStride, 0, ctx->cacheInHeight, outImageData, outImageStride);
 }
-
 
 void ImageResizer_ReleaseContext(ImageResizerContext** context)
 {
