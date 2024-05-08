@@ -12,14 +12,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE On)
 
 target_sources(${PROJECT_NAME}
 	PRIVATE
-		src/MediaDecoder.c
-		src/ImageResizer.c src/ImageResizer.h
-		src/SoundResampler.c src/SoundResampler.h
-		src/Internal.c src/Internal.h
+		"src/MediaDecoder.c"
+		"src/ImageResizer.c" "src/ImageResizer.h"
+		"src/SoundResampler.c" "src/SoundResampler.h"
+		"src/Internal.c" "src/Internal.h"
 )
 
 target_sources(${PROJECT_NAME}
-	PUBLIC FILE_SET HEADERS BASE_DIRS include FILES include/${PROJECT_NAME}/MediaDecoder.h
+	PUBLIC FILE_SET HEADERS BASE_DIRS include FILES "include/${PROJECT_NAME}/MediaDecoder.h"
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
