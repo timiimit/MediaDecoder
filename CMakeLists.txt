@@ -6,6 +6,7 @@ include(CMakePackageConfigHelpers)
 include(FetchContent)
 
 set(CMAKE_TLS_VERIFY TRUE)
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
 
 add_library(${PROJECT_NAME} STATIC)
 set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE On)
